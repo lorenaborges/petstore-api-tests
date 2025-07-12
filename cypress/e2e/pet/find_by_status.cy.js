@@ -1,34 +1,21 @@
-describe('Buscar PET por status', () => {
-    it('deve retornar PETS com o status "pending"', () => {
-        cy.request({
-            method: 'GET',
-            url: '/pet/findByStatus',
-            qs: { status: 'pending' },
-            headers: { 'Content-Type': 'application/json' }
-        }).then((res) => {
-            expect(res.status).to.eq(200);
-            expect(res.body).to.be.an('array');
-            if (res.body.length > 0) {
-                res.body.forEach((pet) => {
-                    expect(pet.status).to.eq('pending');
-                });
-            }
+describe('Buscar PETS por status', () => {
+    ['pending', 'sold'].forEach((status) => {
+        it(`deve retornar PETs com o status "${status}"`, () => {
+            cy.request({
+                method: 'GET',
+                url: '/pet/findByStatus',
+                qs: { status },
+                headers: { 'Content-Type': 'application/json' }
+            }).then((response) => {
+                expect(response.status).to.eq(200);
+                expect(response.body).to.be.an('array');
+
+                if (response.body.length > 0) {
+                    response.body.forEach((pet) => {
+                        expect(pet.status).to.eq(status);
+                    });
+                }
+            });
         });
-    })
-    it('deve retornar PETS com o status "sold"', () => {
-        cy.request({
-            method: 'GET',
-            url: '/pet/findByStatus',
-            qs: { status: 'sold' },
-            headers: { 'Content-Type': 'application/json' }
-        }).then((res) => {
-            expect(res.status).to.eq(200);
-            expect(res.body).to.be.an('array');
-            if (res.body.length > 0) {
-                res.body.forEach((pet) => {
-                    expect(pet.status).to.eq('sold');
-                });
-            }
-        });
-    })
+    });
 })
